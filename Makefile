@@ -39,7 +39,7 @@ VERSION     = 1.9
 # Supported OSes:
 #
 #OS         = DARWIN
-#OS         = LINUX
+OS         = LINUX
 
 # Please see the "Other possible defines" section below for
 # possible compilation options.
@@ -56,7 +56,7 @@ SHELL       = /bin/sh
 ECHO        = /bin/echo
 
 BUILD       = DBG
-TARGETDIR   = $(OS)_$(shell uname -r)_$(BUILD)
+TARGETDIR   = Linux_DBG
 
 # For Cygwin, it pass a default OS env, we ignore it.
 ifeq ($(OS), Windows_NT)
@@ -232,7 +232,7 @@ else
 ST_ALL      = $(TARGETDIR) $(LIBRARIES) $(HEADER) $(DESC)
 endif
 
-all: $(ST_ALL)
+all: $(TARGETDIR) $(LIBRARIES) $(HEADER) examples $(DESC)
 
 unknown:
 	@echo
@@ -281,6 +281,10 @@ $(TARGETDIR)/md_cygwin64.o: md_cygwin64.S
 
 $(TARGETDIR)/%.o: %.c common.h md.h
 	$(CC) $(CFLAGS) -c $< -o $@
+
+examples::
+	@echo Making $@
+	@cd $@; $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" OS="$(OS)" TARGETDIR="$(TARGETDIR)"
 
 clean:
 	rm -rf *_OPT *_DBG obj st.pc
